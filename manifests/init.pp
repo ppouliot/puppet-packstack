@@ -38,23 +38,12 @@
 class packstack {
 #  include vcsrepo
   notify {"your home is ${homedir}":}
-  $packstack_requirements = ['tox',
                             ]
-  $packstack_dir          = '/opt/packstack'
-
-  package { $packstack_requirements:
-    ensure => present,
-  } 
-if $from_package == 'true' {
-  package { 'rdo-release-grizzly':
-    provider => rpm,
-    source   => 'http://rdo.fedorapeople.org/openstack/openstack-grizzly/rdo-release-grizzly.rpm'
-  }   
-}
+  $'packstack_src'          = '/opt/packstack'
 
 if $from_source == 'true' {
-  $packstack_dir = undef
-  vcsrepo{ $packstack_dir:
+  $'packstack_src' = undef
+  vcsrepo{ $'packstack_src':
     ensure   => present,
     provider => git,
     source   => "git://github.com/stackforge/packstack"
@@ -62,10 +51,17 @@ if $from_source == 'true' {
 }
 
   exec {'gen_packstack_answerfile':
-    command => "/usr/bin/python ${packstack_dir}/bin/packstack --gen-answer-file=$packstack_dir/${hostname}.txt", 
-    cwd     => $packstack_dir,
+    command => "/usr/bin/python ${'packstack_src'}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
+    cwd     => $packstack_src,
     user    => 'root',
     environment => "HOME=/root",
-    require => File [ $packstack_dir ],
+    equire => File [ $packstack_src ],
   }
+  class{'packstack::network':}
+  class{'packstack::packages':}
+  class{'packstack::tweaks':}
 }
+  Class['packstack::network']   ->
+    Class['packstack::packages':] ->
+      Class['packstack::tweaks':]
+
