@@ -38,7 +38,8 @@
 class packstack {
 #  include vcsrepo
   notify {"your home is ${homedir}":}
-                            ]
+  notify {"your gateway is ${default_gateway}":}
+
   $packstack_src          = '/usr/local/src/packstack'
 
   vcsrepo{ $packstack_src:
@@ -52,14 +53,14 @@ class packstack {
     cwd     => $packstack_src,
     user    => 'root',
     environment => "HOME=/root",
-    require => File [ $packstack_src ],
+    require => Vcsrepo[ $packstack_src ],
   }
 
   class{'packstack::network':}
   class{'packstack::packages':}
-  class{'packstack::tweaks':}
+#  class{'packstack::tweaks':}
 }
   Class['packstack::network']   ->
-    Class['packstack::packages':] ->
-      Class['packstack::tweaks':]
+    Class['packstack::packages'] ->
+      Class['packstack::tweaks']
 
