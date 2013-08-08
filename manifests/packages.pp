@@ -1,11 +1,11 @@
 class packstack::packages {
 
-  $packstack_packages = [ 'openstack-packstack','openstack-utils' ]
+  include packstack::params 
 
   package {'rdo-release-grizzly':
     ensure   => installed,
     provider => rpm,
-    source   => 'http://rdo.fedorapeople.org/openstack/openstack-grizzly/rdo-release-grizzly.rpm',
+    source   => $rdo_release_rpm_url,
   }
 
   package { $packstack_packages:

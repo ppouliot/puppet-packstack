@@ -36,7 +36,15 @@
 # Copyright 2013 Your name here, unless otherwise noted.
 #
 class packstack {
-#  include vcsrepo
+
+  $kvm_compute_host = "10.21.7.9"
+  $network_host = "10.21.7.9"
+
+
+  include packstack::params
+
+
+
   notify {"your home is ${homedir}":}
   notify {"your gateway is ${default_gateway}":}
 
@@ -55,12 +63,15 @@ class packstack {
     environment => "HOME=/root",
     require => Vcsrepo[ $packstack_src ],
   }
+#  packstack::answerfile{"packstack3node.conf":} 
 
+#  class{'packstack::sshkeygen':}
   class{'packstack::network':}
   class{'packstack::packages':}
 #  class{'packstack::tweaks':}
 }
+# Class['packstack::sshkeygen'] ->
   Class['packstack::network']   ->
-    Class['packstack::packages'] ->
-      Class['packstack::tweaks']
+   Class['packstack::packages'] 
+#-> Class['packstack::tweaks']
 
