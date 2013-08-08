@@ -3,4 +3,4 @@ class {'packstack::tweaks':
     command => 'sed -i 's/^#\ firewall_driver/firewall_driver/g' /etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini',
     notify  => Service['quantum-server'],
   } 
-
+}

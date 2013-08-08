@@ -11,7 +11,7 @@ class packstack::network {
 
   file {'/etc/sysconfig/network':
     ensure => present,
-    content => template(packstack/network.erb),
+    content => template('packstack/network.erb'),
   }
 
   file {'/etc/resolv.conf'

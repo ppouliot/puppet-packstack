@@ -39,24 +39,22 @@ class packstack {
 #  include vcsrepo
   notify {"your home is ${homedir}":}
                             ]
-  $'packstack_src'          = '/opt/packstack'
+  $packstack_src          = '/usr/local/src/packstack'
 
-if $from_source == 'true' {
-  $'packstack_src' = undef
-  vcsrepo{ $'packstack_src':
+  vcsrepo{ $packstack_src:
     ensure   => present,
     provider => git,
     source   => "git://github.com/stackforge/packstack"
   }
-}
 
   exec {'gen_packstack_answerfile':
-    command => "/usr/bin/python ${'packstack_src'}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
+    command => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
     cwd     => $packstack_src,
     user    => 'root',
     environment => "HOME=/root",
-    equire => File [ $packstack_src ],
+    require => File [ $packstack_src ],
   }
+
   class{'packstack::network':}
   class{'packstack::packages':}
   class{'packstack::tweaks':}
