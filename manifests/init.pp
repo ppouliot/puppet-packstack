@@ -71,7 +71,8 @@ class packstack {
 #  class{'packstack::tweaks':}
 }
 # Class['packstack::sshkeygen'] ->
-  Class['packstack::network']   ->
-   Class['packstack::packages'] 
+  Class['packstack::network']    ->
+   Class['packstack::packages']   ->
+     Class['packstack::answerfile'] 
 #-> Class['packstack::tweaks']
 
