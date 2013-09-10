@@ -1,6 +1,6 @@
 ANSWERS_FILE=packstack_answers.conf
-NETWORK_HOST=10.10.10.2
-KVM_COMPUTE_HOST=10.10.10.3
+NETWORK_HOST=192.168.100.172
+KVM_COMPUTE_HOST=192.168.100.188
 openstack-config --set $ANSWERS_FILE general CONFIG_SSH_KEY /root/.ssh/id_rsa.pub
 openstack-config --set $ANSWERS_FILE general CONFIG_NTP_SERVERS 0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org
 openstack-config --set $ANSWERS_FILE general CONFIG_CINDER_VOLUMES_SIZE 20G

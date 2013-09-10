@@ -9,58 +9,68 @@ $cinder_volume_size = $packstack::params::cinder_volume_size,
 
   include packstack::params
 
+notify { "Here I am ":}
   exec {"gen-packstack-answer-file-${name}":
-    command => "/usr/bin/packstack  --genanswerfile=${name}",
-    creates => "${name}",
+    command => "/usr/bin/python /usr/bin/packstack --gen-answer-file=${homedir}/${name}",
+    #cwd => $homedir,
+    #command => "/root/genpackstack.sh",
+    cwd     => $homedir,
+    user  => 'root',
+    creates => "${homedir}/${name}",
+    #path  => '/sbin/:/usr/bin/:/bin',
+    before => [  Exec["set-packstack-ssh-key-${name}"], Exec["set-packstack-ntp-pool-${name}"], Exec["set-packstack-cinder-volume-size-${name}"], Exec["set-packstack-kvm-compute-hosts-${name}"], Exec["set-packstack-nova-network-${name}"], Exec["set-packstack-quantum-l3-hosts-${name}"], Exec["set-packstack-quantum-dhcp-hosts-${name}"], Exec["set-packstack-quantum-metadata-hosts-${name}"], Exec["set-packstack-quantum-tenant-network-type-${name}"], Exec["set-packstack-vlan-range-${name}"], Exec["set-packstack-bridge-mappings-${name}"], Exec["set-packstack-bridge-interfaces-${name}"] ],
   } 
-
   exec {"set-packstack-ssh-key-${name}":
-    command => "openstack-config --set ${name} general CONFIG_SSH_KEY ${ssh_key}.pub",
-    require => Exec["gen-packstack-answerfile-${name}"],
+   #command => "/usr/bin/openstack-config  --set ${name} general CONFIG_SSH_KEY ",
+   command => "/usr/bin/openstack-config  --set ${name} general CONFIG_NTP_SERVERS ${ntp_server_pool}",
+   cwd => $homedir,
+   user  => 'root',
+   require => Exec["gen-packstack-answer-file-${name}"],
   }
-
   exec {"set-packstack-ntp-pool-${name}":
-    command => "openstack-config --set ${name} general CONFIG_NTP_SERVERS ${ntp_server_pool}",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_NTP_SERVERS ${ntp_server_pool}",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-cinder-volume-size-${name}":
-    command => "openstack-config --set ${name} general CONFIG_CINDER_VOLUMES_SIZE ${cinder_volume_size}",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_CINDER_VOLUMES_SIZE ${cinder_volume_size}",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-kvm-compute-hosts-${name}":
-    command => "openstack-config --set ${name} general CONFIG_NOVA_COMPUTE_HOSTS ${kvm_compute_host}",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_NOVA_COMPUTE_HOSTS ${kvm_compute_host}",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-nova-network-${name}":
-    command => "openstack-config --del ${name} general CONFIG_NOVA_NETWORK_HOST",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --del ${name} general CONFIG_NOVA_NETWORK_HOST",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-quantum-l3-hosts-${name}":
-    command => "openstack-config --set ${name} general CONFIG_QUANTUM_L3_HOSTS ${network_host}",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_QUANTUM_L3_HOSTS ${network_host}",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-quantum-dhcp-hosts-${name}":
-    command => "openstack-config --set ${name} general CONFIG_QUANTUM_DHCP_HOSTS ${network_host}",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_QUANTUM_DHCP_HOSTS ${network_host}",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-quantum-metadata-hosts-${name}":
-    command => "openstack-config --set ${name} general CONFIG_QUANTUM_METADATA_HOSTS ${network_host}",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_QUANTUM_METADATA_HOSTS ${network_host}",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-quantum-tenant-network-type-${name}":
-    command => "openstack-config --set ${name} general CONFIG_QUANTUM_OVS_TENANT_NETWORK_TYPE vlan",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_QUANTUM_OVS_TENANT_NETWORK_TYPE vlan",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-vlan-range-${name}":
-    command => "openstack-config --set ${name} general CONFIG_QUANTUM_OVS_VLAN_RANGES physnet1:${vlan_range}",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_QUANTUM_OVS_VLAN_RANGES physnet1:${vlan_range}",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-bridge-mappings-${name}":
-    command => "openstack-config --set ${name} general CONFIG_QUANTUM_OVS_BRIDGE_MAPPINGS physnet1:br-eth1",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_QUANTUM_OVS_BRIDGE_MAPPINGS physnet1:br-eth1",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
   exec {"set-packstack-bridge-interfaces-${name}":
-    command => "openstack-config --set ${name} general CONFIG_QUANTUM_OVS_BRIDGE_IFACES br-eth1:eth1",
-    require => Exec["gen-packstack-answerfile-${name}"],
+    command => "/usr/bin/openstack-config  --set ${name} general CONFIG_QUANTUM_OVS_BRIDGE_IFACES br-eth1:eth1",
+    require => Exec["gen-packstack-answer-file-${name}"],
   }
+
+   Exec["gen-packstack-answer-file-${name}"] -> Exec["set-packstack-ssh-key-${name}"] -> Exec["set-packstack-ntp-pool-${name}"] -> Exec["set-packstack-cinder-volume-size-${name}"] -> Exec["set-packstack-kvm-compute-hosts-${name}"] -> Exec["set-packstack-nova-network-${name}"] -> Exec["set-packstack-quantum-l3-hosts-${name}"] -> Exec["set-packstack-quantum-dhcp-hosts-${name}"] -> Exec["set-packstack-quantum-metadata-hosts-${name}"] -> Exec["set-packstack-quantum-tenant-network-type-${name}"] -> Exec["set-packstack-vlan-range-${name}"] -> Exec["set-packstack-bridge-mappings-${name}"] -> Exec["set-packstack-bridge-interfaces-${name}"]
 }
