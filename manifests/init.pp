@@ -37,18 +37,15 @@
 #
 class packstack {
 
-  $kvm_compute_host = "10.21.7.9"
-  $network_host = "10.21.7.9"
-
-
+  $kvm_compute_host = "192.168.100.188"
+  $network_host = "192.168.100.172"
+  $controller_host = "192.168.100.237"
   include packstack::params
-
-
 
   notify {"your home is ${homedir}":}
   notify {"your gateway is ${default_gateway}":}
 
-  $packstack_src          = '/usr/local/src/packstack'
+  $packstack_src = '/usr/local/src/packstack'
 
   vcsrepo{ $packstack_src:
     ensure   => present,
@@ -56,23 +53,39 @@ class packstack {
     source   => "git://github.com/stackforge/packstack"
   }
 
-  exec {'gen_packstack_answerfile':
-    command => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
-    cwd     => $packstack_src,
-    user    => 'root',
-    environment => "HOME=/root",
-    require => Vcsrepo[ $packstack_src ],
-  }
-#  packstack::answerfile{"packstack3node.conf":} 
+  #exec {'gen_packstack_answerfile':
+    #command => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
+    #cwd     => $packstack_src,
+    #user    => 'root',
+    #environment => "HOME=/root",
+    #require => Vcsrepo[ $packstack_src ],
+  #}
+  #class { 'packstack::answerfile' : name => 'packstack_answers.conf'}   
+#class{'packstack::answerfile':} 
 
-#  class{'packstack::sshkeygen':}
+  class{'packstack::sshkeygen':}
   class{'packstack::network':}
   class{'packstack::packages':}
-#  class{'packstack::tweaks':}
-}
-# Class['packstack::sshkeygen'] ->
-  Class['packstack::network']    ->
-   Class['packstack::packages']   ->
-     Class['packstack::answerfile'] 
-#-> Class['packstack::tweaks']
+  class{ 'packstack::answerfile' : name => 'packstack_answers.conf'}
+  class{'packstack::tweaks':}
+  class{'packstack::openvswitch':}
 
+exec {'install_packstack':
+    command => "/usr/bin/python /usr/bin/packstack --answer-file=${homedir}/packstack_answers.conf",
+    cwd     => $homedir,
+    user    => "root",
+    environment => "HOME=/root",
+    timeout => 1500,
+    logoutput => true,
+    require => package[$packstack::params::packstack_packages],
+ }
+
+
+ Class['packstack::network'] -> 
+  Class['packstack::packages'] -> 
+   Class['packstack::sshkeygen'] ->
+    Class['packstack::answerfile'] -> 
+     Exec ['install_packstack']  ->
+      Class['packstack::tweaks'] ->
+       Class['packstack::openvswitch']
+}
