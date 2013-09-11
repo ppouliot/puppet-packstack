@@ -1,5 +1,6 @@
+require 'facter'
 Facter.add("default_gateway") do
   setcode do
-  facter::Util::Resolution.exec( `netstat -nr |grep eth0 |grep UG |awk '{ print 2}'`)
+  Facter::Util::Resolution.exec( "netstat -nr |grep eth0 |grep UG |awk '{ print $2}'" )
   end
 end
