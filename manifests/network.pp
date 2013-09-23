@@ -16,7 +16,11 @@ class packstack::network {
 
   file {'/etc/resolv.conf':
     ensure => present,
-    content => ["nameserver ${nameserver_ip} "],
+    content => ["nameserver 10.21.7.1
+nameserver 10.21.7.2
+"],
+
+
   }
   service { 'network':
     ensure => running,

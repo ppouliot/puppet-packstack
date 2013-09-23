@@ -1,4 +1,4 @@
-class packstack::answerfile(
+define packstack::answerfile(
 $ssh_key = $packstack::params::ssh_key,
 $ntp_server_pool = $packstack::params::ntp_server_pool,
 $kvm_compute_host = $packstack::kvm_compute_host,

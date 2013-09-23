@@ -50,39 +50,38 @@ class packstack ( $kvm_compute_host,$network_host,$controller_host){
     source   => "git://github.com/stackforge/packstack"
   }
 
-  #exec {'gen_packstack_answerfile':
-    #command => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
-    #cwd     => $packstack_src,
-    #user    => 'root',
-    #environment => "HOME=/root",
-    #require => Vcsrepo[ $packstack_src ],
-  #}
-  #class { 'packstack::answerfile' : name => 'packstack_answers.conf'}   
-  #class{'packstack::answerfile':} 
+  exec {'generate_packstack_answerfile_from_source':
+    command => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
+    cwd     => $packstack_src,
+    user    => 'root',
+    environment => "HOME=/root",
+    require => Vcsrepo[ $packstack_src ],
+  }
 
-  class{'packstack::sshkeygen':}
+#  class{'packstack::sshkeygen':}
   class{'packstack::network':}
   class{'packstack::packages':}
-  class{ 'packstack::answerfile' : name => 'packstack_answers.conf'}
+#  class{ 'packstack::answerfile' : name => 'packstack_answers.conf'}
   class{'packstack::tweaks':}
-  class{'packstack::openvswitch':}
+#  class{'packstack::openvswitch':}
 
-exec {'install_packstack':
-    command => "/usr/bin/python /usr/bin/packstack --answer-file=${homedir}/packstack_answers.conf",
-    cwd     => $homedir,
-    user    => "root",
-    environment => "HOME=/root",
-    timeout => 1500,
-    logoutput => true,
-    require => package[$packstack::params::packstack_packages],
- }
+#exec {'install_packstack':
+#    command => "/usr/bin/python /usr/bin/packstack --answer-file=${homedir}/packstack_answers.conf",
+#    cwd     => $homedir,
+#    user    => "root",
+#    environment => "HOME=/root",
+#    timeout => 1500,
+#    logoutput => true,
+#    require => package[$packstack::params::packstack_packages],
+# }
 
+#packstack::answerfile{'packstack-answers.conf':}
 
  Class['packstack::network'] -> 
-  Class['packstack::packages'] -> 
-   Class['packstack::sshkeygen'] ->
-    Class['packstack::answerfile'] -> 
-     Exec ['install_packstack']  ->
-      Class['packstack::tweaks'] ->
-       Class['packstack::openvswitch']
+  Class['packstack::packages']  -> 
+#   Class['packstack::sshkeygen'] ->
+#    Class['packstack::answerfile'] -> 
+#     Exec ['install_packstack']  ->
+      Class['packstack::tweaks'] #->
+#       Class['packstack::openvswitch']
 }
