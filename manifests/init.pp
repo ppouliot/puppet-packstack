@@ -35,11 +35,8 @@
 #
 # Copyright 2013 Your name here, unless otherwise noted.
 #
-class packstack {
+class packstack ( $kvm_compute_host,$network_host,$controller_host){
 
-  $kvm_compute_host = "192.168.100.188"
-  $network_host = "192.168.100.172"
-  $controller_host = "192.168.100.237"
   include packstack::params
 
   notify {"your home is ${homedir}":}
@@ -61,7 +58,7 @@ class packstack {
     #require => Vcsrepo[ $packstack_src ],
   #}
   #class { 'packstack::answerfile' : name => 'packstack_answers.conf'}   
-#class{'packstack::answerfile':} 
+  #class{'packstack::answerfile':} 
 
   class{'packstack::sshkeygen':}
   class{'packstack::network':}
