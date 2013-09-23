@@ -16,7 +16,7 @@ class packstack::network {
 
   file {'/etc/resolv.conf':
     ensure => present,
-    content => ['nameserver 192.168.100.1'],
+    content => ["nameserver ${nameserver_ip} "],
   }
   service { 'network':
     ensure => running,
