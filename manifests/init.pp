@@ -44,6 +44,8 @@ class packstack ( $kvm_compute_host,$network_host,$controller_host){
 
   $packstack_src = '/usr/local/src/packstack'
 
+if $hostname == 'openstack-controller' {
+
   vcsrepo{ $packstack_src:
     ensure   => present,
     provider => git,
@@ -57,6 +59,9 @@ class packstack ( $kvm_compute_host,$network_host,$controller_host){
     environment => "HOME=/root",
     require => Vcsrepo[ $packstack_src ],
   }
+
+  class{'packstack::packages':}
+}
 
 #  class{'packstack::sshkeygen':}
   class{'packstack::network':}

@@ -12,7 +12,7 @@ class packstack::packages {
     provider => yum,
     require => Package['rdo-release-grizzly']
   }
- package {'python-paramiko':
+  package {'python-paramiko':
     ensure   => installed,
     provider => yum,
     source   => Package['python-paramiko'],
