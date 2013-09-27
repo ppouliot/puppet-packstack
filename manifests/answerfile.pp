@@ -15,8 +15,6 @@ notify { "Here I am ":}
     cwd     => $homedir,
     user  => 'root',
     creates => "${homedir}/${name}",
-    #path  => '/sbin/:/usr/bin/:/bin',
-    #before => [  Exec["set-packstack-ssh-key-${name}"], Exec["set-packstack-ntp-pool-${name}"], Exec["set-packstack-cinder-volume-size-${name}"], Exec["set-packstack-kvm-compute-hosts-${name}"], Exec["set-packstack-nova-network-${name}"], Exec["set-packstack-quantum-l3-hosts-${name}"], Exec["set-packstack-quantum-dhcp-hosts-${name}"], Exec["set-packstack-quantum-metadata-hosts-${name}"], Exec["set-packstack-quantum-tenant-network-type-${name}"], Exec["set-packstack-vlan-range-${name}"], Exec["set-packstack-bridge-mappings-${name}"], Exec["set-packstack-bridge-interfaces-${name}"] ],
   } 
   exec {"set-packstack-ssh-key-${name}":
     command => "/usr/bin/openstack-config  --set ${name} general CONFIG_SSH_KEY ",
