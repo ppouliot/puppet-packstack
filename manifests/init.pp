@@ -60,12 +60,12 @@ if $hostname == 'openstack-controller' {
     require => Vcsrepo[ $packstack_src ],
   }
 
-  class{'packstack::packages':}
+#  class{'packstack::packages':}
 }
 
 #  class{'packstack::sshkeygen':}
   class{'packstack::network':}
-#  class{'packstack::packages':}
+  class{'packstack::packages':}
 #  class{ 'packstack::answerfile' : name => 'packstack_answers.conf'}
   class{'packstack::tweaks':}
 #  class{'packstack::openvswitch':}
