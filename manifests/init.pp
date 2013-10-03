@@ -60,6 +60,8 @@ if $hostname == 'openstack-controller' {
     require => Vcsrepo[ $packstack_src ],
   }
 
+class{'packstack::answerfile':}
+
 #  class{'packstack::packages':}
 }
 

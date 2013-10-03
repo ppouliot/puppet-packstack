@@ -6,4 +6,5 @@ class packstack::params {
   $ntp_server_pool     = ['0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org']
   $vlan_range = "500-1000"
   $cinder_volume_size = "5G"
+  $answerfile = "/root/packstack_answers.txt"
 }
