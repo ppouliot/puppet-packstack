@@ -1,4 +1,0 @@
-DEVICE="em2"
-BOOTPROTO="none"
-MTU="1500"
-ONBOOT="yes"

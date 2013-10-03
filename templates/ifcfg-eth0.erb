@@ -1,4 +1,9 @@
+<% if @macaddress_eth0 -%>
+DEVICE="eth0"
+<% end -%>
+<% if @macaddress_em1 -%>
 DEVICE="em1"
+<% end -%>
 ONBOOT="yes"
 BOOTPROTO="static"
 MTU="1500"
