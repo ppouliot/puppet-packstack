@@ -1,13 +1,13 @@
 class packstack::network {
 
   if $interface_type == 'eth' {
-    $iface1 = 'eth0' 
-    $iface2 = 'eth1' 
+    $iface1 => 'eth0', 
+    $iface2 => 'eth1', 
   }
 
   if $interface_type == 'em' {
-    $iface1 = 'em1' 
-    $iface2 = 'em2' 
+    $iface1 => 'em1', 
+    $iface2 => 'em2', 
   }
 
   file {'/etc/sysconfig/network-scripts/ifcfg-${iface1}":
