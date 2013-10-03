@@ -1,21 +1,21 @@
 class packstack::network {
 
-  if $interface_type == 'eth' {
-    $iface1 => 'eth0', 
-    $iface2 => 'eth1', 
+  $iface1 = $interface_type ? {
+    /(eth)/ => 'eth0', 
+    /(em)/  => 'em1', 
   }
 
-  if $interface_type == 'em' {
-    $iface1 => 'em1', 
-    $iface2 => 'em2', 
+  $iface2 = $interface_type ? {
+    /(eth)/ => 'eth1', 
+    /(em)/  => 'em2', 
   }
 
-  file {'/etc/sysconfig/network-scripts/ifcfg-${iface1}":
+  file {"/etc/sysconfig/network-scripts/ifcfg-${iface1}":
     ensure => present,
     content => template('packstack/ifcfg-eth0.erb'),
     notify => service['network'],
   }
-  file {'/etc/sysconfig/network-scripts/ifcfg-${iface2}":
+  file {"/etc/sysconfig/network-scripts/ifcfg-${iface2}":
     ensure => present,
     content => template('packstack/ifcfg-eth1.erb'),
     notify => service['network'],
@@ -48,7 +48,8 @@ nameserver 10.21.7.2
                       "/etc/sysconfig/network-scripts/ifcfg-${iface2}",
                       '/etc/sysconfig/network','/etc/resolv.conf'],
   }
-File['/etc/sysconfig/network-scripts/ifcfg-eth0'] ->
-  File['/etc/sysconfig/network-scripts/ifcfg-eth1'] ->
-    File['/etc/sysconfig/network']->Service['network']
+File["/etc/sysconfig/network-scripts/ifcfg-${iface1}"] ->
+  File["/etc/sysconfig/network-scripts/ifcfg-${iface2}"] ->
+    File['/etc/sysconfig/network']                         ->
+      Service['network']
 }

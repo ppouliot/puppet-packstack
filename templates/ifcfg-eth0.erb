@@ -7,6 +7,15 @@ DEVICE="em1"
 ONBOOT="yes"
 BOOTPROTO="static"
 MTU="1500"
+<% if @ipaddress_em1 -%>
 IPADDR=<%= @ipaddress_em1 %>
+<% end -%>
+<% if @ipaddress_eth0 -%>
+IPADDR=<%= @ipaddress_eth0 %>
+<% end -%>
 NETMASK=<%= @netmask_em1 %>
+<% end -%>
+<% if @macaddress_eth0 -%>
+NETMASK=<%= @netmask_eth0 %>
+<% end -%>
 PEERDNS="no"
