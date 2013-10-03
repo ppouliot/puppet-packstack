@@ -62,33 +62,17 @@ if $hostname == 'openstack-controller' {
 
 class{'packstack::answerfile':}
 
-#  class{'packstack::packages':}
 }
 
-#  class{'packstack::sshkeygen':}
   class{'packstack::network':}
   class{'packstack::packages':}
-#  class{ 'packstack::answerfile' : name => 'packstack_answers.conf'}
   class{'packstack::tweaks':}
 #  class{'packstack::openvswitch':}
 
-#exec {'install_packstack':
-#    command => "/usr/bin/python /usr/bin/packstack --answer-file=${homedir}/packstack_answers.conf",
-#    cwd     => $homedir,
-#    user    => "root",
-#    environment => "HOME=/root",
-#    timeout => 1500,
-#    logoutput => true,
-#    require => package[$packstack::params::packstack_packages],
-# }
-
-#packstack::answerfile{'packstack-answers.conf':}
 
  Class['packstack::network'] -> 
   Class['packstack::packages']  -> 
-#   Class['packstack::sshkeygen'] ->
-#    Class['packstack::answerfile'] -> 
-#     Exec ['install_packstack']  ->
+   Class['packstack::answerfile'] -> 
       Class['packstack::tweaks'] #->
 #       Class['packstack::openvswitch']
 }
