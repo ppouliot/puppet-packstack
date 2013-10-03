@@ -1,7 +1,7 @@
-<% if $macaddress_eth1 -%>
+<% if @interface_type == 'eth' -%>
 DEVICE="eth1"
 <% end -%>
-<% if $macaddress_em2 -%>
+<% if @interface_type == 'em' -%>
 DEVICE="em2"
 <% end -%>
 BOOTPROTO="none"
