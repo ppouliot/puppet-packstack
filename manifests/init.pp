@@ -66,13 +66,13 @@ class{'packstack::answerfile':}
 
   class{'packstack::network':}
   class{'packstack::packages':}
-  class{'packstack::tweaks':}
+#  class{'packstack::tweaks':}
 #  class{'packstack::openvswitch':}
 
 
  Class['packstack::network'] -> 
   Class['packstack::packages']  -> 
-   Class['packstack::answerfile'] -> 
-      Class['packstack::tweaks'] #->
+   Class['packstack::answerfile'] #-> 
+#      Class['packstack::tweaks'] #->
 #       Class['packstack::openvswitch']
 }
