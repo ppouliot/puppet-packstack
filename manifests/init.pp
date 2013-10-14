@@ -35,7 +35,7 @@
 #
 # Copyright 2013 Your name here, unless otherwise noted.
 #
-class packstack ( $kvm_compute_host,$network_host,$controller_host){
+class packstack ( $openstack_release,$kvm_compute_host,$network_host,$controller_host){
 
 #  $kvm_compute_host = hiera('kvm_compute',{})
 #  $network_host = hiera('network_controller',{})
