@@ -65,7 +65,7 @@ if $hostname == 'openstack-controller' {
   }
 
   class{'packstack::answerfile':}
-  class{'packstack::answerfile':} 
+  class{'packstack::install':} 
 
 }
 
