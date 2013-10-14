@@ -37,6 +37,10 @@
 #
 class packstack ( $kvm_compute_host,$network_host,$controller_host){
 
+#  $kvm_compute_host = hiera('kvm_compute',{})
+#  $network_host = hiera('network_controller',{})
+#  $controller_host = hiera('openstack_controller',{})
+
   include packstack::params
 
   notify {"your home is ${homedir}":}
@@ -57,10 +61,11 @@ if $hostname == 'openstack-controller' {
     cwd     => $packstack_src,
     user    => 'root',
     environment => "HOME=/root",
-    require => Vcsrepo[ $packstack_src ],
+    require => [Vcsrepo[ $packstack_src ],Package['python-netaddr']],
   }
 
-class{'packstack::answerfile':}
+  class{'packstack::answerfile':}
+  class{'packstack::answerfile':} 
 
 }
 
@@ -72,7 +77,8 @@ class{'packstack::answerfile':}
 
  Class['packstack::network'] -> 
   Class['packstack::packages']  -> 
-   Class['packstack::answerfile'] #-> 
+   Class['packstack::answerfile'] -> 
+     Class['packstack::install'] #-> 
 #      Class['packstack::tweaks'] #->
 #       Class['packstack::openvswitch']
 }

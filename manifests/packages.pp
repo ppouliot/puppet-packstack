@@ -2,19 +2,20 @@ class packstack::packages {
 
   include packstack::params 
 
-  package {'rdo-release-grizzly':
-    ensure   => installed,
+  package {"rdo-release-${openstack_release}":
+    ensure   => latest,
     provider => rpm,
     source   => $packstack::params::rdo_release_rpm_url,
   }
+
   package { $packstack::params::packstack_packages:
-    ensure => installed,
+    ensure => latest,
     provider => yum,
-    require => Package['rdo-release-grizzly']
+    require => Package["rdo-release-${openstack_release}"]
   }
-  package {'python-paramiko':
-    ensure   => installed,
+
+  package {['python-paramiko','python-netaddr']:
+    ensure   => latest,
     provider => yum,
-    source   => Package['python-paramiko'],
   }
 }

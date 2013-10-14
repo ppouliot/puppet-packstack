@@ -1,4 +1,5 @@
 class packstack::answerfile(
+
   $ssh_pubkey = $packstack::params::ssh_pubkey,
   $ntp_server_pool = $packstack::params::ntp_server_pool,
   $kvm_compute_host = $packstack::kvm_compute_host,
@@ -6,6 +7,7 @@ class packstack::answerfile(
   $vlan_range = $packstack::params::vlan_range,
   $cinder_volume_size = $packstack::params::cinder_volume_size,
   $answerfile         = $packstack::params::answerfile
+
 ){
 
   include packstack::params
@@ -15,7 +17,8 @@ class packstack::answerfile(
     cwd     => '/root',
     user  => 'root',
     environment => "HOME=/root",
-    require => Package[$packstack::params::packstack_packages]
+    #require => Package[$packstack::params::packstack_packages]
+    require => Class['packstack::packages']
   } 
 
   exec {"set-packstack-ssh-key":
