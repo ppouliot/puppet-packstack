@@ -74,9 +74,8 @@ if $hostname == 'openstack-controller' {
 #  class{'packstack::openvswitch':}
 
 
- Class['packstack::network'] -> 
-  Class['packstack::packages']  -> 
-   Class['packstack::answerfile'] #-> 
+#  Class['packstack::packages']  -> 
+#   Class['packstack::answerfile'] #-> 
 
 #    Class['packstack::install'] #-> 
 #      Class['packstack::tweaks'] #->
