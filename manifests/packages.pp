@@ -4,18 +4,11 @@ class packstack::packages {
 
   include packstack::params 
 
-  package {'puppetlabs-release':
-    ensure   => absent,
-    provider => rpm,
-    source   => $packstack::params::rdo_release_rpm_url,
-  }
-
-
-  package {"rdo-release-${openstack_release}":
+  package {"rdo-release-${openstack_release}-yum":
+    name     => "rdo-release-${openstack_release}",
     ensure   => latest,
-    provider => rpm,
-    source   => $packstack::params::rdo_release_rpm_url,
-    require  => Package['puppetlabs-release'],
+    provider => yum,
+    require => Package["rdo-release-${openstack_release}"]
   }
 
   package { $packstack::params::packstack_packages:
@@ -24,8 +17,4 @@ class packstack::packages {
     require => Package["rdo-release-${openstack_release}"]
   }
 
-  package {['python-paramiko','python-netaddr']:
-    ensure   => latest,
-    provider => yum,
-  }
 }
