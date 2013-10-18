@@ -48,7 +48,7 @@ class packstack ( $openstack_release,$kvm_compute_host,$network_host,$controller
 
   $packstack_src = '/usr/local/src/packstack'
 
-if $hostname == 'openstack-controller' {
+ if fromsource == 'true' {
 
   vcsrepo{ $packstack_src:
     ensure   => present,
@@ -63,21 +63,22 @@ if $hostname == 'openstack-controller' {
     environment => "HOME=/root",
     require => [Vcsrepo[ $packstack_src ],Package['python-netaddr']],
   }
+ } else { 
 
+  class{'packstack::packages':}
   class{'packstack::answerfile':}
  # class{'packstack::install':} 
 
+ }
 }
-
-  class{'packstack::packages':}
+#  class{'packstack::packages':}
 #  class{'packstack::tweaks':}
 #  class{'packstack::openvswitch':}
 
 
-#  Class['packstack::packages']  -> 
-#   Class['packstack::answerfile'] #-> 
+  Class['packstack::packages']  -> 
+   Class['packstack::answerfile'] #-> 
 
 #    Class['packstack::install'] #-> 
 #      Class['packstack::tweaks'] #->
 #       Class['packstack::openvswitch']
-}
