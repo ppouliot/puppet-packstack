@@ -4,12 +4,12 @@ class packstack::packages {
 
   include packstack::params 
 
-  package {"rdo-release-${openstack_release}-yum":
-    name     => "rdo-release-${openstack_release}",
-    ensure   => latest,
-    provider => yum,
-    require => Package["rdo-release-${openstack_release}"]
-  }
+#  package {"rdo-release-${openstack_release}-yum":
+#    name     => "rdo-release-${openstack_release}",
+#    ensure   => latest,
+#    provider => yum,
+#    require => Package["rdo-release-${openstack_release}"]
+#  }
 
   package { $packstack::params::packstack_packages:
     ensure => latest,

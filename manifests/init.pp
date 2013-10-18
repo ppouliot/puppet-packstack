@@ -65,6 +65,7 @@ class packstack ( $openstack_release,$kvm_compute_host,$network_host,$controller
   }
  }
 
+  class{'packstack::yumrepo':}
   class{'packstack::packages':}
   class{'packstack::answerfile':}
  # class{'packstack::install':} 
@@ -75,6 +76,7 @@ class packstack ( $openstack_release,$kvm_compute_host,$network_host,$controller
 #  class{'packstack::openvswitch':}
 
 
+ Class['packstack::yumrepo']  -> 
   Class['packstack::packages']  -> 
    Class['packstack::answerfile'] #-> 
 
