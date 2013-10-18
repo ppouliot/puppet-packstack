@@ -63,13 +63,12 @@ class packstack ( $openstack_release,$kvm_compute_host,$network_host,$controller
     environment => "HOME=/root",
     require => [Vcsrepo[ $packstack_src ],Package['python-netaddr']],
   }
- } else { 
+ }
 
   class{'packstack::packages':}
   class{'packstack::answerfile':}
  # class{'packstack::install':} 
 
- }
 }
 #  class{'packstack::packages':}
 #  class{'packstack::tweaks':}
