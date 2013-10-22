@@ -12,6 +12,6 @@ class packstack::params {
       /(grizzly)/   => 'QUANTUM',
       /(havana)/    => 'NEUTRON',
       /(icehouse)/  => 'NEUTRON',
-      default     => 'unsupported rele
+      default     => 'unsupported release',
   } 
 }
