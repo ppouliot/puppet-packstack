@@ -9,9 +9,7 @@ class packstack::params {
   $vlan_range          = "500:1000"
   $cinder_volume_size  = "5G"
   $openstack_networking = $openstack_release ? {
-      /(grizzly)/   => 'QUANTUM',
-      /(havana)/    => 'NEUTRON',
-      /(icehouse)/  => 'NEUTRON',
-      default     => 'unsupported release',
+      /(grizzly)/ => 'QUANTUM',
+      default     => 'NEUTRON',
   } 
 }
