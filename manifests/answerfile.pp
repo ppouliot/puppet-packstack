@@ -40,9 +40,13 @@ class packstack::answerfile(
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NOVA_COMPUTE_HOSTS ${kvm_compute_host}",
     require => Exec["set-packstack-cinder-volume-size"],
   }
+  exec {"set-packstack-swift":
+    command => "/usr/bin/openstack-config  --del ${answerfile} general CONFIG_SWIFT_INSTALL",
+    require => Exec["set-packstack-kvm-compute-hosts"],
+  }
   exec {"set-packstack-nova-network":
     command => "/usr/bin/openstack-config  --del ${answerfile} general CONFIG_NOVA_NETWORK_HOST",
-    require => Exec["set-packstack-kvm-compute-hosts"],
+    require => Exec["set-packstack-swift"],
   }
   exec {"set-packstack-${openstack_networking}-l3-hosts":
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_L3_HOSTS ${network_host}",
