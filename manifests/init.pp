@@ -46,39 +46,36 @@ class packstack ( $openstack_release,$kvm_compute_host,$network_host,$controller
   notify {"your home is ${homedir}":}
   notify {"your gateway is ${default_gateway}":}
 
-  $packstack_src = '/usr/local/src/packstack'
+  if fromsource == 'true' {
 
- if fromsource == 'true' {
+    $packstack_src = '/usr/local/src/packstack'
 
-  vcsrepo{ $packstack_src:
-    ensure   => present,
-    provider => git,
-    source   => "git://github.com/stackforge/packstack"
+    vcsrepo{ $packstack_src:
+      ensure   => present,
+      provider => git,
+      source   => "git://github.com/stackforge/packstack"
+    }
+
+    exec {'generate_packstack_answerfile_from_source':
+      command => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
+      cwd     => $packstack_src,
+      user    => 'root',
+      environment => "HOME=/root",
+      require => [Vcsrepo[ $packstack_src ],Package['python-netaddr']],
+    }
   }
+    class{'packstack::yumrepo':}
+    class{'packstack::packages':}
+    class{'packstack::answerfile':}
 
-  exec {'generate_packstack_answerfile_from_source':
-    command => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
-    cwd     => $packstack_src,
-    user    => 'root',
-    environment => "HOME=/root",
-    require => [Vcsrepo[ $packstack_src ],Package['python-netaddr']],
-  }
- }
-
-  class{'packstack::yumrepo':}
-  class{'packstack::packages':}
-  class{'packstack::answerfile':}
- # class{'packstack::install':} 
-
-}
 #  class{'packstack::packages':}
 #  class{'packstack::tweaks':}
 #  class{'packstack::openvswitch':}
 
-
- Class['packstack::yumrepo']  -> 
-  Class['packstack::packages']  -> 
-   Class['packstack::answerfile'] #-> 
+}
+#Class['packstack::yumrepo']  -> 
+#  Class['packstack::packages']  -> 
+#   Class['packstack::answerfile'] #-> 
 
 #    Class['packstack::install'] #-> 
 #      Class['packstack::tweaks'] #->

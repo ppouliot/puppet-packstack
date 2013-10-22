@@ -8,7 +8,7 @@ class packstack::packages {
 #    name     => "rdo-release-${openstack_release}",
 #    ensure   => latest,
 #    provider => yum,
-#    require => Package["rdo-release-${openstack_release}"]
+#    require => Class['packstack::yumrepo']
 #  }
 
   package { $packstack::params::packstack_packages:

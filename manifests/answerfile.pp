@@ -8,6 +8,8 @@ class packstack::answerfile(
   $cinder_volume_size = $packstack::params::cinder_volume_size,
   $answerfile         = $packstack::params::answerfile
 
+  $openstack_networking = $packstack::params::openstack_networkin/
+
 ){
 
   include packstack::params
@@ -43,32 +45,32 @@ class packstack::answerfile(
     command => "/usr/bin/openstack-config  --del ${answerfile} general CONFIG_NOVA_NETWORK_HOST",
     require => Exec["set-packstack-kvm-compute-hosts"],
   }
-  exec {"set-packstack-quantum-l3-hosts":
-    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_QUANTUM_L3_HOSTS ${network_host}",
+  exec {"set-packstack-${openstack_networking}-l3-hosts":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_L3_HOSTS ${network_host}",
     require => Exec["set-packstack-nova-network"],
   }
-  exec {"set-packstack-quantum-dhcp-hosts":
-    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_QUANTUM_DHCP_HOSTS ${network_host}",
-    require => Exec["set-packstack-quantum-l3-hosts"],
+  exec {"set-packstack-${openstack_networking}-dhcp-hosts":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_DHCP_HOSTS ${network_host}",
+    require => Exec["set-packstack-${openstack_networking}-l3-hosts"],
   }
-  exec {"set-packstack-quantum-metadata-hosts":
-    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_QUANTUM_METADATA_HOSTS ${network_host}",
-    require => Exec["set-packstack-quantum-dhcp-hosts"],
+  exec {"set-packstack-${openstack_networking}-metadata-hosts":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_METADATA_HOSTS ${network_host}",
+    require => Exec["set-packstack-${openstack_networking}-dhcp-hosts"],
   }
-  exec {"set-packstack-quantum-tenant-network-type":
-    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_QUANTUM_OVS_TENANT_NETWORK_TYPE vlan",
-    require => Exec["set-packstack-quantum-metadata-hosts"],
+  exec {"set-packstack-${openstack_networking}-tenant-network-type":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_TENANT_NETWORK_TYPE vlan",
+    require => Exec["set-packstack-${openstack_networking}-metadata-hosts"],
   }
   exec {"set-packstack-vlan-range":
-    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_QUANTUM_OVS_VLAN_RANGES physnet1:${vlan_range}",
-    require => Exec["set-packstack-quantum-tenant-network-type"],
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_VLAN_RANGES physnet1:${vlan_range}",
+    require => Exec["set-packstack-${openstack_networking}-tenant-network-type"],
   }
   exec {"set-packstack-bridge-mappings":
-    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_QUANTUM_OVS_BRIDGE_MAPPINGS physnet1:br-eth1",
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_BRIDGE_MAPPINGS physnet1:br-eth1",
     require => Exec["set-packstack-vlan-range"],
   }
   exec {"set-packstack-bridge-interfaces":
-    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_QUANTUM_OVS_BRIDGE_IFACES br-eth1:eth1",
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_BRIDGE_IFACES br-eth1:eth1",
     require => Exec["set-packstack-bridge-mappings"],
   }
 }
