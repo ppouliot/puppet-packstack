@@ -6,9 +6,8 @@ class packstack::answerfile(
   $network_host = $packstack::network_host,
   $vlan_range = $packstack::params::vlan_range,
   $cinder_volume_size = $packstack::params::cinder_volume_size,
-  $answerfile         = $packstack::params::answerfile
-
-  $openstack_networking = $packstack::params::openstack_networkin/
+  $answerfile         = $packstack::params::answerfile,
+  $openstack_networking = $packstack::params::openstack_networking
 
 ){
 
