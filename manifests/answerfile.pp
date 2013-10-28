@@ -7,8 +7,8 @@ class packstack::answerfile(
   $vlan_range           = $packstack::params::vlan_range,
   $cinder_volume_size   = $packstack::params::cinder_volume_size,
   $answerfile           = $packstack::params::answerfile,
-  $openstack_networking = $packstack::params::openstack_networking
-  $floating_ip_range    = $packstack::params::floating_ip_range
+  $openstack_networking = $packstack::params::openstack_networking,
+  $floating_ip_range    = $packstack::params::floating_ip_range,
   $public_if            = $packstack::params::public_if
 
 ){
