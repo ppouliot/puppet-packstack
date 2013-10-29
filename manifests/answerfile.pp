@@ -46,13 +46,14 @@ class packstack::answerfile(
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NOVA_COMPUTE_HOSTS ${kvm_compute_host}",
     require => Exec["set-packstack-cinder-volume-size"],
   }
-  exec {"set-packstack-swift":
-    command => "/usr/bin/openstack-config  --del ${answerfile} general CONFIG_SWIFT_INSTALL",
+  exec {"set-packstack-enable-heat":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_HEAT_INSTALL y",
     require => Exec["set-packstack-kvm-compute-hosts"],
   }
   exec {"set-packstack-nova-network":
     command => "/usr/bin/openstack-config  --del ${answerfile} general CONFIG_NOVA_NETWORK_HOST",
-    require => Exec["set-packstack-swift"],
+    require => Exec["set-packstack-enable-heat"],
+    #require => Exec["set-packstack-kvm-compute-hosts"],
   }
   exec {"set-packstack-${openstack_networking}-l3-hosts":
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_L3_HOSTS ${network_host}",
@@ -82,16 +83,20 @@ class packstack::answerfile(
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_BRIDGE_IFACES br-eth1:eth1",
     require => Exec["set-packstack-bridge-mappings"],
   }
-  exec {"set-packstack-ssl-horizon":
-    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_HORIZION_SSL",
-    require => Exec["set-packstack-bridge-interface"],
-  }
   exec {"set-packstack-floating-ip-range":
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NOVA_NETWORK_FLOATRANGE ${floating_ip_range}",
-    require => Exec["set-packstack-ssl-horizon"],
+    require => Exec["set-packstack-bridge-interfaces"],
   }
   exec {"set-packstack-public-if":
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NOVA_NETWORK_PUBIF ${public_if}",
-    require => Exec["set-packstack-ssl-horizon"],
+    require => Exec["set-packstack-floating-ip-range"],
+  }
+  exec {"set-packstack-nagios-host":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NAGIOS_HOST ${network_host}",
+    require => Exec["set-packstack-public-if"],
+  }
+  exec {"set-packstack-nagios-install":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NAGIOS_INSTALL y",
+    require => Exec["set-packstack-nagios-host"],
   }
 }

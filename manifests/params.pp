@@ -1,6 +1,6 @@
 class packstack::params {
   $sshkey_path          = "/root"
-  $ssh_pubkey           = "/root/.ssh/id_rsa"
+  $ssh_pubkey           = "/root/.ssh/id_dsa.pub"
   $answerfile           = "/root/packstack_answers.txt"
   $openstack_release    = undef
   $packstack_packages   = [ 'openstack-packstack','openstack-utils' ]
