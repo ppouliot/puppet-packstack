@@ -50,10 +50,17 @@ class packstack::answerfile(
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_HEAT_INSTALL y",
     require => Exec["set-packstack-kvm-compute-hosts"],
   }
+  exec {"set-packstack-enable-heat-cloudwatch":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general OS_HEAT_CLOUDWATCH_INSTALL y",
+    require => Exec["set-packstack-enable-heat"],
+  }
+  exec {"set-packstack-enable-heat-cloudformation":
+    command => "/usr/bin/openstack-config  --set ${answerfile} general OS_HEAT_CFN_INSTALL y",
+    require => Exec["set-packstack-enable-heat-cloudwatch"],
+  }
   exec {"set-packstack-nova-network":
     command => "/usr/bin/openstack-config  --del ${answerfile} general CONFIG_NOVA_NETWORK_HOST",
-    require => Exec["set-packstack-enable-heat"],
-    #require => Exec["set-packstack-kvm-compute-hosts"],
+    require => Exec["set-packstack-enable-heat-cloudformation"],
   }
   exec {"set-packstack-${openstack_networking}-l3-hosts":
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_L3_HOSTS ${network_host}",

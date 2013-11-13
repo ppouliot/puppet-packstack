@@ -12,6 +12,6 @@ class packstack::params {
       /(grizzly)/ => 'QUANTUM',
       default     => 'NEUTRON',
   } 
-  $floating_ip_range    = '172.18.2.0/24'
+  $floating_ip_range    = '172.18.2.0/23'
   $public_if            = 'eth2'
 }
