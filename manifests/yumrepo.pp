@@ -19,4 +19,13 @@ class packstack::yumrepo {
     require  => Package['puppetlabs-release'],
   }
 
+  file {'/etc/yum.repos.d/epel.repo':
+    ensure => present,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => 'puppet:///modules/packstack/epel.repo',
+    require => Package["rdo-release-${openstack_release}-rpm"],
+  }
+
 }
