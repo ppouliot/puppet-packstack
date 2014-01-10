@@ -1,0 +1,6 @@
+BOOTPROTO=static
+DEVICE=eth1
+TYPE=Ethernet
+PROMISC=yes
+USERCTL=no
+PEERDNS=no

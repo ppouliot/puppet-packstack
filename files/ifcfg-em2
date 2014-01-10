@@ -1,0 +1,6 @@
+BOOTPROTO=static
+DEVICE=em2
+TYPE=Ethernet
+PROMISC=yes
+USERCTL=no
+PEERDNS=no
