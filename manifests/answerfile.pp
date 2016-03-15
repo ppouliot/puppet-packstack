@@ -1,3 +1,4 @@
+# == Class: packstack::answerfile
 class packstack::answerfile(
 
   $ssh_pubkey           = $packstack::params::ssh_pubkey,
@@ -19,52 +20,51 @@ class packstack::answerfile(
 # --novanetwork-pubif=eth2 --novacompute-privif=eth1
 
 
-  exec {"gen-packstack-answer-file":
-    command => "/usr/bin/python /usr/bin/packstack --gen-answer-file=${answerfile}",
-    cwd     => '/root',
-    user  => 'root',
-    environment => "HOME=/root",
-    #require => Package[$packstack::params::packstack_packages]
-    require => Class['packstack::packages']
-  } 
+  exec {'gen-packstack-answer-file':
+    command     => "/usr/bin/python /usr/bin/packstack --gen-answer-file=${answerfile}",
+    cwd         => '/root',
+    user        => 'root',
+    environment => 'HOME=/root',
+    require     => Class['packstack::packages']
+  }
 
-  exec {"set-packstack-ssh-key":
+  exec {'set-packstack-ssh-key':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_SSH_KEY ${ssh_pubkey}",
     cwd     => '/root',
-    require => Exec["gen-packstack-answer-file"],
+    require => Exec['gen-packstack-answer-file'],
   }
 
-  exec {"set-packstack-ntp-pool":
+  exec {'set-packstack-ntp-pool':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NTP_SERVERS ${ntp_server_pool}",
-    require => Exec["set-packstack-ssh-key"],
+    require => Exec['set-packstack-ssh-key'],
   }
-  exec {"set-packstack-cinder-volume-size":
+  exec {'set-packstack-cinder-volume-size':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_CINDER_VOLUMES_SIZE ${cinder_volume_size}",
-    require => Exec["set-packstack-ntp-pool"],
+    require => Exec['set-packstack-ntp-pool'],
   }
-  exec {"set-packstack-kvm-compute-hosts":
+  exec {'set-packstack-kvm-compute-hosts':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NOVA_COMPUTE_HOSTS ${kvm_compute_host}",
-    require => Exec["set-packstack-cinder-volume-size"],
+    require => Exec['set-packstack-cinder-volume-size'],
   }
-  exec {"set-packstack-enable-heat":
+  exec {'set-packstack-enable-heat':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_HEAT_INSTALL y",
-    require => Exec["set-packstack-kvm-compute-hosts"],
+    require => Exec['set-packstack-kvm-compute-hosts'],
   }
-  exec {"set-packstack-enable-heat-cloudwatch":
+  exec {'set-packstack-enable-heat-cloudwatch':
     command => "/usr/bin/openstack-config  --set ${answerfile} general OS_HEAT_CLOUDWATCH_INSTALL y",
-    require => Exec["set-packstack-enable-heat"],
+    require => Exec['set-packstack-enable-heat'],
   }
-  exec {"set-packstack-enable-heat-cloudformation":
+  exec {'set-packstack-enable-heat-cloudformation':
     command => "/usr/bin/openstack-config  --set ${answerfile} general OS_HEAT_CFN_INSTALL y",
-    require => Exec["set-packstack-enable-heat-cloudwatch"],
+    require => Exec['set-packstack-enable-heat-cloudwatch'],
   }
-  exec {"set-packstack-nova-network":
+  exec {'set-packstack-nova-network':
     command => "/usr/bin/openstack-config  --del ${answerfile} general CONFIG_NOVA_NETWORK_HOST",
-    require => Exec["set-packstack-enable-heat-cloudformation"],
+    require => Exec['set-packstack-enable-heat-cloudformation'],
   }
   exec {"set-packstack-${openstack_networking}-l3-hosts":
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_L3_HOSTS ${network_host}",
-    require => Exec["set-packstack-nova-network"],
+    require => Exec['set-packstack-nova-network'],
   }
   exec {"set-packstack-${openstack_networking}-dhcp-hosts":
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_DHCP_HOSTS ${network_host}",
@@ -78,32 +78,32 @@ class packstack::answerfile(
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_TENANT_NETWORK_TYPE vlan",
     require => Exec["set-packstack-${openstack_networking}-metadata-hosts"],
   }
-  exec {"set-packstack-vlan-range":
+  exec {'set-packstack-vlan-range':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_VLAN_RANGES physnet1:${vlan_range}",
     require => Exec["set-packstack-${openstack_networking}-tenant-network-type"],
   }
-  exec {"set-packstack-bridge-mappings":
+  exec {'set-packstack-bridge-mappings':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_BRIDGE_MAPPINGS physnet1:br-eth1",
-    require => Exec["set-packstack-vlan-range"],
+    require => Exec['set-packstack-vlan-range'],
   }
-  exec {"set-packstack-bridge-interfaces":
+  exec {'set-packstack-bridge-interfaces':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_${openstack_networking}_OVS_BRIDGE_IFACES br-eth1:eth1",
-    require => Exec["set-packstack-bridge-mappings"],
+    require => Exec['set-packstack-bridge-mappings'],
   }
-  exec {"set-packstack-floating-ip-range":
+  exec {'set-packstack-floating-ip-range':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NOVA_NETWORK_FLOATRANGE ${floating_ip_range}",
-    require => Exec["set-packstack-bridge-interfaces"],
+    require => Exec['set-packstack-bridge-interfaces'],
   }
-  exec {"set-packstack-public-if":
+  exec {'set-packstack-public-if':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NOVA_NETWORK_PUBIF ${public_if}",
-    require => Exec["set-packstack-floating-ip-range"],
+    require => Exec['set-packstack-floating-ip-range'],
   }
-  exec {"set-packstack-nagios-host":
+  exec {'set-packstack-nagios-host':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NAGIOS_HOST ${network_host}",
-    require => Exec["set-packstack-public-if"],
+    require => Exec['set-packstack-public-if'],
   }
-  exec {"set-packstack-nagios-install":
+  exec {'set-packstack-nagios-install':
     command => "/usr/bin/openstack-config  --set ${answerfile} general CONFIG_NAGIOS_INSTALL y",
-    require => Exec["set-packstack-nagios-host"],
+    require => Exec['set-packstack-nagios-host'],
   }
 }

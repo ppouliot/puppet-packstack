@@ -1,9 +1,6 @@
-class packstack::packages {
-
+# == Class: packstack::packages
+class packstack::packages () inherits packstack::params {
   $openstack_release = $packstack::params::openstack_release
-
-  include packstack::params 
-
 #  package {"rdo-release-${openstack_release}-yum":
 #    name     => "rdo-release-${openstack_release}",
 #    ensure   => latest,
@@ -12,9 +9,9 @@ class packstack::packages {
 #  }
 
   package { $packstack::params::packstack_packages:
-    ensure => latest,
+    ensure   => latest,
     provider => yum,
-    require => Package["rdo-release-${openstack_release}"]
+    require  => Package["rdo-release-${openstack_release}"]
   }
 
 }

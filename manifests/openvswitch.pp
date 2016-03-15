@@ -1,9 +1,9 @@
+# == Class: packstack::openvswitch
 class packstack::openvswitch(
-$network_host = $packstack::network_host,
+  $network_host = $packstack::network_host,
 ){
-    
-     exec { "addeth2bridge":
-	command => "/usr/bin/ssh -o StrictHostKeychecking=no ${network_host} /usr/bin/ovs-vsctl add-port br-ex eth2"
-	}
+  exec {'addeth2bridge':
+    command => "/usr/bin/ssh -o StrictHostKeychecking=no ${network_host} /usr/bin/ovs-vsctl add-port br-ex eth2"
+  }
 }
 

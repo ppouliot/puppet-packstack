@@ -43,25 +43,25 @@ class packstack ( $openstack_release,$kvm_compute_host,$network_host,$controller
 
   include packstack::params
 
-  notify {"your home is ${homedir}":}
-  notify {"your gateway is ${default_gateway}":}
+  notify {"your home is ${::homedir}":}
+  notify {"your gateway is ${::default_gateway}":}
 
-  if fromsource == 'true' {
+  if fromsource == true {
 
     $packstack_src = '/usr/local/src/packstack'
 
     vcsrepo{ $packstack_src:
       ensure   => present,
       provider => git,
-      source   => "git://github.com/stackforge/packstack"
+      source   => 'git://github.com/stackforge/packstack'
     }
 
     exec {'generate_packstack_answerfile_from_source':
-      command => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${hostname}.txt", 
-      cwd     => $packstack_src,
-      user    => 'root',
-      environment => "HOME=/root",
-      require => [Vcsrepo[ $packstack_src ],Package['python-netaddr']],
+      command     => "/usr/bin/python ${packstack_src}/bin/packstack --gen-answer-file=${packstack_src}/${::hostname}.txt",
+      cwd         => $packstack_src,
+      useri       => 'root',
+      environment => 'HOME=/root',
+      require     => [Vcsrepo[ $packstack_src ],Package['python-netaddr']],
     }
   }
     class{'packstack::yumrepo':}
